@@ -23,12 +23,15 @@ public class MyConfig {
     public DataSource dataSource() {
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
         try {
-            dataSource.setDriverClass("com.mysql.cj.jdbc.Driver");
-            dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/my_db?allowPublicKeyRetrieval=true&useSSL=false");
-            dataSource.setUser("root");
-            dataSource.setPassword("root");
+            Class.forName("org.postgresql.Driver");
+            dataSource.setDriverClass("org.postgresql.Driver");
+            dataSource.setUser("postgres");
+            dataSource.setPassword("postgres");
+            dataSource.setJdbcUrl("jdbc:postgresql://localhost:5432/postgres?createDatabaseIfNotExist=true");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("PostgreSQL JDBC Driver not found: " + e.getMessage());
         } catch (PropertyVetoException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error configuring ComboPooledDataSource: " + e.getMessage());
         }
 
         return dataSource;
@@ -41,8 +44,8 @@ public class MyConfig {
         sessionFactory.setPackagesToScan("com.picsartacademy.entity");
 
         Properties hibernateProperties = new Properties();
-        hibernateProperties.setProperty("hibernate.dialect"
-                , "org.hibernate.dialect.MySQLDialect");
+        hibernateProperties.setProperty("hibernate.dialect",
+                "org.hibernate.dialect.PostgreSQLDialect");
         hibernateProperties.setProperty("hibernate.show_sql"
                 , "true");
         hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop");

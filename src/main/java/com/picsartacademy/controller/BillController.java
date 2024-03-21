@@ -17,7 +17,7 @@ public class BillController {
     private BillService billService;
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<Bill> generateBill(@PathVariable Long orderId) {
+    public ResponseEntity<Bill> generateBill(@PathVariable("billId") Long orderId) {
         Bill bill = billService.generateBill(orderId);
         return new ResponseEntity<>(bill, HttpStatus.OK);
     }
